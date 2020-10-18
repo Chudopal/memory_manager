@@ -4,9 +4,18 @@
 #include "memory/memory.h"
 
 int main(int argc, char **argv) {
-    m_init(5, 4096);
+    m_init(5, 4096, 10);
+
 
     /*int error_code;
+    m_id chunk_1 = m_malloc(13, &error_code);
+    if (error_code != M_ERR_OK) abort();
+
+    m_id chunk_2 = m_malloc(20, &error_code);
+    if (error_code != M_ERR_OK) abort();
+
+    m_id chunk_3 = m_malloc(50, &error_code);
+    if (error_code != M_ERR_OK) abort();
 
     m_id chunk_1 = m_malloc(13, &error_code);
     if (error_code != M_ERR_OK) abort();

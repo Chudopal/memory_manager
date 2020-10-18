@@ -4,5 +4,6 @@ CMakeCache.txt
 Makefile
 bin
 /cmake-build-debug
-.ides
+/.idea
 /build
+/.vscode

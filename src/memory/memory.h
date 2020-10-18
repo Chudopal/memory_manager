@@ -1,6 +1,8 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <stdbool.h>
+
 #define M_ERR_OK 0 // Everything is ok
 #define M_ERR_ALLOCATION_OUT_OF_MEMORY 1 // Not enough memory for allocation
 #define M_ERR_ALREADY_DEALLOCATED 2 // The chunk was already deallocated
@@ -9,27 +11,37 @@
 
 
 typedef int m_err_code; // Error code of sandbox memory
-typedef void* m_id; // Identifier of sandbox memory chunk
+typedef struct memory_block * m_id; // Identifier of sandbox memory chunk
 
 
 struct memory_block {
-    int page_number;
-    int * begin;
-    int * next;
+    m_id begin;
+    m_id next;
+    size_t size;
+    bool is_used;
+    int not_calling;
     char data;
 };
 
 
 struct page_frame {
-    int size;
+    size_t size;
     int number;
+    m_id begin;
 };
 
 
-// Allocates a chunk in sandbox memory
-// @param size_of_chunk Desired size in bytes to be allocated in sandbox memory
-// @param error_code [out] M_ERR_OK, M_ERR_ALLOCATION_OUT_OF_MEMORY
-// @return An identifier for newly allocated chunk
+struct virtual_memory{
+    struct page_frame * pages;
+    int number_of_pages;
+    int temporary_locality;
+};
+
+
+/* Allocates a chunk in sandbox memory
+    @param size_of_chunk Desired size in bytes to be allocated in sandbox memory
+    @param error_code [out] M_ERR_OK, M_ERR_ALLOCATION_OUT_OF_MEMORY
+    @return An identifier for newly allocated chunk */
 m_id m_malloc(int size_of_chunk, m_err_code* error_code);
 
 
@@ -58,7 +70,7 @@ void m_write(m_id write_to_id, void* write_from_buffer, int size_to_write, m_err
 // Initializes sandbox memory allocator. Usually it is number_of_pages*size_of_page.
 // @param number_of_pages Number of pages to allocate
 // @param size_of_page Size of the page
-void m_init(int number_of_pages, int size_of_page);
+void m_init(int number_of_pages, int size_of_pagem, int temporary_locality);
 
 
 #endif /* MEMORY_H */
