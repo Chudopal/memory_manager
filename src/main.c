@@ -4,9 +4,9 @@
 #include "memory/memory.h"
 
 int main(int argc, char **argv) {
-    m_init(1, 500);
+    m_init(5, 4096);
 
-    int error_code;
+    /*int error_code;
 
     m_id chunk_1 = m_malloc(13, &error_code);
     if (error_code != M_ERR_OK) abort();
@@ -47,5 +47,6 @@ int main(int argc, char **argv) {
     if (error_code != M_ERR_OK) abort();
 
     m_free(chunk_3, &error_code);
-    if (error_code != M_ERR_OK) abort();
+    if (error_code != M_ERR_OK) abort();*/
+
 }

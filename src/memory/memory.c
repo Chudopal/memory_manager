@@ -8,6 +8,8 @@ char* _g_allocator_memory = NULL;
 int _g_allocator_memory_size = 0;
 int _g_bytes_allocated = 0;
 
+struct page_frame *pages;
+
 
 m_id m_malloc(int size_of_chunk, m_err_code* error) {
     if (_g_bytes_allocated + size_of_chunk > _g_allocator_memory_size) {
@@ -40,9 +42,12 @@ void m_write(m_id write_to_id, void* write_from_buffer, int size_to_write, m_err
 
 
 void m_init(int number_of_pages, int size_of_page) {
-    if (_g_allocator_memory != NULL) free(_g_allocator_memory);
+    /*if (_g_allocator_memory != NULL) free(_g_allocator_memory);
 
     _g_allocator_memory_size = number_of_pages * size_of_page;
     _g_allocator_memory = malloc(_g_allocator_memory_size);
-    _g_bytes_allocated = 0;
+    _g_bytes_allocated = 0;*/
+    pages = (struct page_frame*)malloc(number_of_pages * sizeof(struct page_frame));
+    for(int i = 0; i < number_of_pages; i++)
+        (pages + i) -> size = size_of_page;
 }
