@@ -15,7 +15,6 @@ typedef struct memory_block * m_id; // Identifier of sandbox memory chunk
 
 
 struct memory_block {
-    m_id begin;
     m_id next;
     size_t size;
     bool is_used;

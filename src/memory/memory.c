@@ -5,6 +5,7 @@
 #include "memory.h"
 
 m_id find_free_segment(int);
+void defragmentation();
 
 struct virtual_memory memory;
 
@@ -25,30 +26,38 @@ m_id m_malloc(int size_of_chunk, m_err_code* error) {
 
 m_id find_free_segment(int size_of_chunk){
     for (int i = 0; i < memory.number_of_pages; i++){
+        bool is_oversize = false;
+
         m_id current = (memory.pages + i) -> begin;
         
-        if (!current->is_used){
-            
+        while(current->is_used || current->size <= size_of_chunk){
+            current = current -> next;
+            if (current >=  (memory.pages + i) -> begin + (memory.pages + i) -> size) {
+                is_oversize = true;
+                break;
+            }
+        }
+
+        if (!is_oversize) {
+            if (current->next == NULL){
+                current -> next = current + size_of_chunk;
+                current -> next -> next = NULL;
+                current -> next -> size = current -> size - size_of_chunk;
+            }else{
+
+                if (current -> size != size_of_chunk){
+                    m_id next = current + size_of_chunk;
+                    next->size = current->size - size_of_chunk;
+                    next->next = current->next;
+                    next->is_used = false;
+                    current -> next = next;
+                }
+            }
+
             current -> size = size_of_chunk;
-            current -> next = current + current -> size;
             current -> not_calling = 0;
             current -> is_used = true;
-            
             return current;
-        
-        } else {
-            
-            while(current->is_used){
-                current = current -> next;
-            }
-            if !(current >= (memory.pages + i) -> begin){
-                current -> size = size_of_chunk;
-                current -> next = current + current -> size;
-                current -> not_calling = 0;
-                current -> is_used = true;
-
-                return current;
-            } 
         }
     }
     return NULL;
@@ -89,4 +98,31 @@ void m_init(int number_of_pages, int size_of_page, int temporary_locality) {
     memory.number_of_pages = number_of_pages;
 }
 
-void defragmentation(){}
+void defragmentation(){
+    for (int i = 0; i < memory.number_of_pages; i++){//страницы
+        
+        current = (memory.pages + i) -> begin;
+        
+        while(current -> next != NULL){//идем по блокам
+            
+            if !(current->is_used){
+                
+                m_id empty_block = current; //здесь будет храниться последний пустой блок в цепочке
+                int size_of_empty_block = 0;
+                
+                while(!empty_block -> next -> is_used){// множество пустых блоков
+                    
+                    size_of_empty_block += current -> size;
+                    empty_block = empty_block -> next;                
+                }
+
+                m_id temp_buffer = empty_block -> next;
+                current -> size = temp_block -> size;
+                current -> next = temp_block -> next;
+                current -> is_used = true;
+                current -> data = temp_block -> data;
+                current -> not_calling = temp_block -> not_calling;
+            }
+        }
+    }
+}
