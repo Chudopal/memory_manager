@@ -101,28 +101,35 @@ void m_init(int number_of_pages, int size_of_page, int temporary_locality) {
 void defragmentation(){
     for (int i = 0; i < memory.number_of_pages; i++){//страницы
         
-        current = (memory.pages + i) -> begin;
+        m_id current = (memory.pages + i) -> begin;
         
         while(current -> next != NULL){//идем по блокам
             
-            if !(current->is_used){
+            if (!current->is_used){
                 
-                m_id empty_block = current; //здесь будет храниться последний пустой блок в цепочке
+                m_id empty_block = current;
                 int size_of_empty_block = 0;
                 
-                while(!empty_block -> next -> is_used){// множество пустых блоков
+                while(!empty_block -> is_used){// множество пустых блоков
                     
                     size_of_empty_block += current -> size;
                     empty_block = empty_block -> next;                
                 }
 
-                m_id temp_buffer = empty_block -> next;
-                current -> size = temp_block -> size;
-                current -> next = temp_block -> next;
+                m_id temp_buffer = empty_block;
+                
+                current -> size = temp_buffer -> size;
                 current -> is_used = true;
-                current -> data = temp_block -> data;
-                current -> not_calling = temp_block -> not_calling;
+                current -> data = temp_buffer -> data;
+                current -> not_calling = temp_buffer -> not_calling;
+
+                m_id next = current + current -> size;
+                next -> size = size_of_empty_block;
+                next -> next = empty_block -> next;
+
+                current -> next = next;
             }
-        }
+            current = current -> next;
+       }
     }
 }
