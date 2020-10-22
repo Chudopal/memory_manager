@@ -66,13 +66,23 @@ m_id find_free_segment(int size_of_chunk){
 
 //-------------------------------------------------------------------------------------------------
 void m_free(m_id ptr, m_err_code* error) {
-    m_id -> is_used = false;
+    ptr -> is_used = false;
 }
 
 //-------------------------------------------------------------------------------------------------
 void m_read(m_id read_from_id,void* read_to_buffer, int size_to_read, m_err_code* error) {
+    read_from_id -> not_calling = 0;
     memcpy(read_to_buffer, read_from_id, size_to_read);
     *error = M_ERR_OK;
+    for (int i = 0; i < memory.number_of_pages; i++){
+        m_id current = (memory.pages+i) -> begin;
+        while(current != NULL){
+            if (current != read_from_id){
+                (current -> not_calling)++;
+            }
+            current = current -> next;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
