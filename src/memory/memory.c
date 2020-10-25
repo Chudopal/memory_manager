@@ -85,12 +85,12 @@ void m_read(m_id read_from_id,void* read_to_buffer, int size_to_read, m_err_code
     read_from_id -> not_calling = 0;
     
 
-    memcpy(read_to_buffer, read_from_id, size_to_read);
+    memcpy(read_to_buffer, read_from_id->data, size_to_read);
     
 
 
     *error = M_ERR_OK;
-    /*for (int i = 0; i < memory.number_of_pages; i++){
+    for (int i = 0; i < memory.number_of_pages; i++){
         m_id current = (memory.pages+i) -> begin;
         while(current != NULL){
             printf("HERE3\n");
@@ -101,45 +101,12 @@ void m_read(m_id read_from_id,void* read_to_buffer, int size_to_read, m_err_code
             printf("%i\n",(current -> not_calling));
             current = current -> next;
         }
-    }*/
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 void m_write(m_id write_to_id, void* write_from_buffer, int size_to_write, m_err_code* error) {
-    //printf("%s\n", "HERE");
-    //m_id a = malloc(1000);
-    //memcpy(a, write_from_buffer, size_to_write);
-    //char s[50];
-    //memcpy(s, a, size_to_write);
-    //printf("%s\n", s);
-    //printf("%s\n",a);
-    //printf("Pointer to next - %p\n", write_to_id->next);
-
-    printf("%p \n",write_to_id->next);
-
     memcpy(write_to_id->data, write_from_buffer, size_to_write);
-    
-    printf("%p \n",write_to_id->next);
-    
-    char a[50];
-    memcpy(a, write_to_id->data, size_to_write);
-
-    printf("This is ehat inside: %s\n", a);
-
-   
-    //printf("Inside malloc\n-------------------------------\n");
-
-
-    //printf("There is the chunk\n");
-    /*for (int i = 0; i < memory.number_of_pages; i++){
-        printf("page №%i\n", i);
-        m_id current = (memory.pages+i) -> begin;
-        while(current != NULL){
-            printf("%p\n", current);
-            printf("%i\n", current-> not_calling);
-            current = current -> next;
-        }
-    }*/
     *error = M_ERR_OK;
 }
 

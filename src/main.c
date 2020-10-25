@@ -19,11 +19,11 @@ int main(int argc, char **argv) {
     printf("pointer to next in main - %p\n", chunk_1->next);
 
     m_write(chunk_1, "Hello World!", 20, &error_code);
-    //
-    //char buffer[50];
-//
-    //m_read(chunk_1, buffer, 13, &error_code);
-    //printf("%s\n", buffer);
+
+    char buffer[50];
+
+    m_read(chunk_1, buffer, 13, &error_code);
+    printf("%s\n", buffer);
 
 
     /*int error_code;
