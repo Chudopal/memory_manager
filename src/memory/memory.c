@@ -14,7 +14,6 @@ m_id m_malloc(int size_of_chunk, m_err_code* error) {
 
     m_id segment = find_free_segment(size_of_chunk);
     
-
     if (segment == NULL){
         defragmentation();
         segment = find_free_segment(size_of_chunk);
@@ -36,10 +35,10 @@ m_id find_free_segment(int size_of_chunk){
         bool is_oversize = false;
 
         m_id current = (memory.pages + i) -> begin;
-        
 
+        //printf("This is for %i\n", size_of_chunk);
+        //printf("This is size of current %i\n", current -> size);
         while(current->is_used || current->size < size){
-            printf("This is for %i\n", size_of_chunk);
             current = current -> next;
             if (current >=  (memory.pages + i) -> begin + (memory.pages + i) -> size) {
                 is_oversize = true;
@@ -56,26 +55,31 @@ m_id find_free_segment(int size_of_chunk){
         if (!is_oversize) {
             if (current->next == NULL){
                 m_id next = current + sizeof(m_id);
-
                 next->is_used = false;
                 next -> next = NULL;
                 next -> size = current -> size - size;
                 next -> data = current -> data + size;
                 current -> next = next;
+                //printf("HERE\n");
             }else{
                 if (current -> size != size){
-                    m_id next = current + sizeof(m_id);
+                    m_id next = malloc(sizeof(m_id));
                     next->is_used = false;
                     next->size = current->size - size;
                     next->data = current->data + size;
                     next->next = current->next;
-                    next->is_used = false;
                     current -> next = next;
+                    printf("HERE!!!\n");
+                    //printf("HERE1\n");
+                    //printf("HERE1 size - %i\n", current -> size);
+                    printf("HERE1 size next - %i\n", current-> next -> next -> size);
                 }
             }
             current -> size = size;
             current -> not_calling = 0;
             current -> is_used = true;
+            printf("size %i\n", current->size);
+            printf("next size %i \n", current -> next -> size);
             return current;
         }
     }
@@ -139,18 +143,18 @@ void m_init(int number_of_pages, int size_of_page, int temporary_locality) {
 
 //-------------------------------------------------------------------------------------------------
 void defragmentation(){
-    for (int i = 0; i < memory.number_of_pages; i++){//страницы
-        
+
+    for (int i = 0; i < memory.number_of_pages; i++){        
         m_id current = (memory.pages + i) -> begin;
         
-        while(current -> next != NULL){//идем по блокам
+        while(current -> next != NULL){
             
             if (!current->is_used){
                 
                 m_id empty_block = current;
                 int size_of_empty_block = 0;
                 
-                while(!empty_block -> is_used){// множество пустых блоков
+                while(!empty_block -> is_used){
                     
                     size_of_empty_block += current -> size;
                     empty_block = empty_block -> next;                
@@ -160,7 +164,6 @@ void defragmentation(){
                 
                 current -> size = temp_buffer -> size;
                 current -> is_used = true;
-                //current -> data = temp_buffer -> data;
                 current -> not_calling = temp_buffer -> not_calling;
 
                 m_id next = current + current -> size;
