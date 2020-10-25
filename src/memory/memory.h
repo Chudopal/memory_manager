@@ -19,7 +19,7 @@ struct memory_block {
     size_t size;
     bool is_used;
     int not_calling;
-    char data;
+    char * data;
 };
 
 
