@@ -47,10 +47,10 @@ m_id find_free_segment(int size_of_chunk){
         }
 
         if (!is_oversize) {
-
             if (current->next == NULL){
+                m_id next = current + sizeof(m_id);
 
-                m_id next =  malloc(sizeof(m_id));
+                next->is_used = false;
                 next -> next = NULL;
                 next -> size = current -> size - size;
                 next -> data = current -> data + size;
@@ -58,6 +58,7 @@ m_id find_free_segment(int size_of_chunk){
             }else{
                 if (current -> size != size){
                     m_id next = malloc(sizeof(m_id));
+                    next->is_used = false;
                     next->size = current->size - size;
                     next->data = current->data + size;
                     next->next = current->next;
