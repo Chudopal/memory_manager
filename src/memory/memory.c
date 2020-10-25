@@ -38,11 +38,18 @@ m_id find_free_segment(int size_of_chunk){
         m_id current = (memory.pages + i) -> begin;
         
 
-        while(current->is_used || current->size <= size){
+        while(current->is_used || current->size < size){
+            printf("This is for %i\n", size_of_chunk);
             current = current -> next;
             if (current >=  (memory.pages + i) -> begin + (memory.pages + i) -> size) {
                 is_oversize = true;
                 break;
+            }
+            if (current -> not_calling > memory.temporary_locality){
+                current->is_used = false;
+                if (current->size >= size){
+                    break;
+                }
             }
         }
 
@@ -57,7 +64,7 @@ m_id find_free_segment(int size_of_chunk){
                 current -> next = next;
             }else{
                 if (current -> size != size){
-                    m_id next = malloc(sizeof(m_id));
+                    m_id next = current + sizeof(m_id);
                     next->is_used = false;
                     next->size = current->size - size;
                     next->data = current->data + size;
@@ -93,7 +100,6 @@ void m_read(m_id read_from_id,void* read_to_buffer, int size_to_read, m_err_code
     for (int i = 0; i < memory.number_of_pages; i++){
         m_id current = (memory.pages+i) -> begin;
         while(current != NULL){
-            printf("HERE3\n");
             printf("%p\n", current);
             if (current != read_from_id){
                 current -> not_calling++;
