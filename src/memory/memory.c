@@ -154,41 +154,7 @@ void m_init(
     memory.number_of_pages = number_of_pages;
 }
 
-//-------------------------------------------------------------------------------------------------
-/*void defragmentation(){
-
-    for (int i = 0; i < memory.number_of_pages; i++){       
-        m_id current = (memory.pages + i) -> begin;
-        
-        while(current -> next != NULL){
-            
-            if (!current->is_used){
-                
-                m_id empty_block = current;
-                int size_of_empty_blocks = 0;
-                
-                while(!empty_block -> is_used){
-                    size_of_empty_blocks += current -> size;
-                    empty_block = empty_block -> next;
-                }
-
-                m_id temp_buffer = empty_block;
-
-                current -> size = temp_buffer -> size;
-                current -> is_used = true;
-                current -> not_calling = temp_buffer -> not_calling;
-
-                m_id next = current + current -> size;
-                next -> size = size_of_empty_blocks;
-                next -> next = empty_block -> next;
-
-                current -> next = next;
-            }
-            current = current -> next;
-       }
-    }
-}*/
-
+//--------------------------------------------------------------------------------------------------
 void defragmentation(){
     for(int i = 0; i < memory.number_of_pages; i++){
         m_id current        = (memory.pages + i) -> begin;
@@ -222,5 +188,7 @@ void defragmentation(){
             }
             current = current -> next;
         }
+        space_begin -> next = NULL;
+        space_begin -> size = common_size;
     }
 }
