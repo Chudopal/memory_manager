@@ -192,30 +192,32 @@ void m_init(
 void defragmentation(){
     for(int i = 0; i < memory.number_of_pages; i++){
         m_id current        = (memory.pages + i) -> begin;
-        m_id begin_space    = NULL;
-        m_id end_space      = NULL;
+        m_id space_begin    = NULL;
+        m_id space_end      = NULL;
         int common_size     = 0;
 
         while(current != NULL){
 
             if(!current -> is_used){
-
-                if (begin_space == NULL){
-                    begin_space = current;
-                    end_space = current;
+                
+                common_size += current -> size;
+                if (space_begin == NULL){
+                    space_begin = current;
+                    space_end = current;
                 }else{
-                    end_space = current;
+                    space_end = current;
                 }
 
                 if (current -> next -> is_used){
-                    begin_space -> size = current -> next -> size;
+                    space_begin -> size = current -> next -> size;
                     memcpy(
-                        begin_space -> data,
+                        space_begin -> data,
                         current -> next -> data,
                         current -> next -> size
                     );
-                    begin_space -> is_used = true;
+                    space_begin -> is_used = true;
                     current -> is_used = false;
+                    space_begin = space_begin -> next;
                 }
             }
             current = current -> next;
