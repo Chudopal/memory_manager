@@ -30,6 +30,7 @@ m_id m_malloc(
 }
 
 //-------------------------------------------------------------------------------------------------
+/*This function allows to find free segment*/
 m_id find_free_segment(
     int size_of_chunk
 ){
@@ -188,6 +189,7 @@ void defragmentation(){
             }
             current = current -> next;
         }
+        
         space_begin -> next = NULL;
         space_begin -> size = common_size;
     }
